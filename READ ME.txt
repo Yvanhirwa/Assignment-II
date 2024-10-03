@@ -1,0 +1,680 @@
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Thu Oct 3 15:32:00 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: sys
+Enter password:
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+Enter user-name: sys as sysdba
+Enter password:
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+SQL> Select table Roles;
+Select table Roles
+       *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> SELECT TABLE Roles;
+SELECT TABLE Roles
+       *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> SELECT * TABLE Roles;
+SELECT * TABLE Roles
+         *
+ERROR at line 1:
+ORA-00923: FROM keyword not found where expected
+
+
+SQL> SELECT * FROM Roles;
+
+no rows selected
+
+SQL> SELECT role_id, name FROM Roles;
+
+no rows selected
+
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (1, 'Admin', 'Administrator role with full access');
+
+1 row created.
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (2, 'User', 'Regular user with limited access');
+
+1 row created.
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (3, 'Guest', 'Guest user with read-only access');
+
+1 row created.
+
+SQL> SELECT * FROM Roles;
+
+   ROLE_ID NAME
+---------- --------------------------------------------------
+DESCRIPTION
+--------------------------------------------------------------------------------
+         1 Admin
+Administrator role with full access
+
+         2 User
+Regular user with limited access
+
+         3 Guest
+Guest user with read-only access
+
+
+SQL> Table: Groups
+SP2-0734: unknown command beginning "Table: Gro..." - rest of line ignored.
+SQL> Column Name        Data Type       Description
+SP2-0158: unknown COLUMN option "Data"
+SQL> group_id   INT     Primary key, unique identifier for each group
+SP2-0734: unknown command beginning "group_id   I..." - rest of line ignored.
+SQL> name       VARCHAR(50)     Group name
+SP2-0734: unknown command beginning "name       VARCH..." - rest of line ignored.
+SQL> CREATE TABLE Groups (
+  2  group_id INT PRIMARY KEY,
+  3  name VARCHAR2(50),
+  4  description CLOB
+  5  );
+
+Table created.
+
+SQL> CREATE TABLE Systems (
+  2  system_id INT PRIMARY KEY,
+  3  name VARCHAR2(100),
+  4  description CLOB
+  5  );
+
+Table created.
+
+SQL> CREATE TABLE Properties (
+  2  property_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  name VARCHAR2(100),
+  5  value CLOB,
+  6  CONSTRAINT fk_system_id FOREIGN KEY (system_id) REFERENCES Systems(syst
+em_id)
+  7  );
+
+Table created.
+
+SQL> CREATE TABLE Events (
+  2  event_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  type VARCHAR@(50),
+  5  message CLOB,
+  6  timestamp TIMESTAMP,
+  7  CONSTRAINT fk_system_id FOREIGN KEY (system_id) REFERENCES Systems(syst
+em_id)
+  8  );
+type VARCHAR@(50),
+            *
+ERROR at line 4:
+ORA-00906: missing left parenthesis
+
+
+SQL> CREATE TABLE Events (
+  2  event_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  type VARCHAR2(50),
+  5  message CLOB,
+  6  timestamp TIMESTAMP,
+  7  CONSTRAINT fk_system_id FOREIGN KEY (system_id) REFERENCES Systems(system_id)
+  8  );
+CONSTRAINT fk_system_id FOREIGN KEY (system_id) REFERENCES Systems(system_id)
+           *
+ERROR at line 7:
+ORA-02264: name already used by an existing constraint
+
+
+SQL> CREATE TABLE Events (
+  2  event_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  type VARCHAR@(50),
+  5  type VARCHAR@(50),
+  6  ;
+type VARCHAR@(50),
+            *
+ERROR at line 4:
+ORA-00906: missing left parenthesis
+
+
+SQL> CREATE TABLE Events (
+  2  event_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  type VARCHAR2(50),
+  5  message CLOB,
+  6  timestamp TIMESTAMP,
+  7  CONSTRAINT fk_events_system_id FOREIGN KEY (system_id) REFERENCES Syste
+ms(system_id)
+  8  );
+
+Table created.
+
+SQL> CREATE TABLE Actions (
+  2  action_id INT PRIMARY KEY,
+  3  system_id INT,
+  4  type VARCHAR2(50),
+  5  message CLOB,
+  6  timestamp TIMESTAMP,
+  7  CONSTRAINT fk_actions_system_id FOREIGN KEY (system_id) REFERENCES Syst
+ems(system_id)
+  8  );
+
+Table created.
+
+SQL> -- Inserting a new user
+SQL> INSERT INTO Users (user_id, username, password, email, created_at)
+  2  VALUES (1, 'john_doe', 'hashed_password_1', 'john@example.com', SYSTIMESTAMP);
+
+1 row created.
+
+SQL>
+SQL> INSERT INTO Users (user_id, username, password, email, created_at)
+  2  VALUES (2, 'jane_smith', 'hashed_password_2', 'jane@example.com', SYSTIMESTAMP);
+
+1 row created.
+
+SQL>
+SQL> INSERT INTO Users (user_id, username, password, email, created_at)
+  2  VALUES (3, 'alice_jones', 'hashed_password_3', 'alice@example.com', SYSTIMESTAMP);
+
+1 row created.
+
+SQL> Select * FROM Users;
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+PASSWORD
+--------------------------------------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+CREATED_AT
+---------------------------------------------------------------------------
+         1 john_doe
+hashed_password_1
+john@example.com
+03-OCT-24 16.15.37.142000
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+PASSWORD
+--------------------------------------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+CREATED_AT
+---------------------------------------------------------------------------
+         2 jane_smith
+hashed_password_2
+jane@example.com
+03-OCT-24 16.15.37.144000
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+PASSWORD
+--------------------------------------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+CREATED_AT
+---------------------------------------------------------------------------
+         3 alice_jones
+hashed_password_3
+alice@example.com
+03-OCT-24 16.15.37.147000
+
+
+SQL> -- Inserting new roles
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (1, 'Admin', 'Administrator role with full access');
+INSERT INTO Roles (role_id, name, description)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYS.SYS_C008316) violated
+
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (2, 'User', 'Regular user role with limited access');
+INSERT INTO Roles (role_id, name, description)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYS.SYS_C008316) violated
+
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (3, 'Guest', 'Guest user role with read-only access');
+INSERT INTO Roles (role_id, name, description)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYS.SYS_C008316) violated
+
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (4, 'Moderator', 'Role with permission to moderate content');
+
+1 row created.
+
+SQL>
+SQL> INSERT INTO Roles (role_id, name, description)
+  2  VALUES (5, 'SuperUser', 'Superuser role with extended privileges');
+
+1 row created.
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (1, 'Book Club', 'A group for people who love reading and discussing books.'),
+  3  (2, 'Hiking Enthusiasts', 'A community for those who enjoy outdoor adventures and hiking.'),
+  4  (3, 'Photography Lovers', 'A group for amateur and professional photographers to share their work and tips.'),
+  5  (4, 'Tech Innovators', 'A network for individuals interested in technology and innovation.'),
+  6  (5, 'Cooking Masters', 'A group dedicated to cooking and sharing recipes from around the world.');
+(1, 'Book Club', 'A group for people who love reading and discussing books.'),
+
+ *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (1, 'Book Club', 'A group for people who love reading and discussing books.');
+
+1 row created.
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (2, 'Hiking Enthusiasts', 'A community for those who enjoy outdoor adventures and hiking.');
+
+1 row created.
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (3, 'Photography Lovers', 'A group for amateur and professional photographers to share their work and tips.');
+
+1 row created.
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (4, 'Tech Innovators', 'A network for individuals interested in technology and innovation.'),\;
+(4, 'Tech Innovators', 'A network for individuals interested in technology and innovation.'),\
+
+                *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (4, 'Tech Innovators', 'A network for individuals interested in technology and innovation.');
+
+1 row created.
+
+SQL> INSERT INTO Groups (group_id, name, description) VALUES
+  2  (5, 'Cooking Masters', 'A group dedicated to cooking and sharing recipes from around the world.');
+
+1 row created.
+
+SQL> INSERT INTO Systems (system_id, name, description) VALUES
+  2  (1, 'Inventory Management', 'A system for tracking inventory levels, orders, sales, and deliveries.');
+
+1 row created.
+
+SQL> (2, 'Customer Relationship Management', 'A system for managing a company\'s interactions with current and potential customers.');
+(2, 'Customer Relationship Management', 'A system for managing a company\'s interactions with current and potential customers.')
+ *
+ERROR at line 1:
+ORA-00928: missing SELECT keyword
+
+
+SQL> (3, 'Project Management Tool', 'A system designed to help manage project planning, resources, and schedules.');
+(3, 'Project Management Tool', 'A system designed to help manage project planning, resources, and schedules.')
+ *
+ERROR at line 1:
+ORA-00928: missing SELECT keyword
+
+
+SQL> (4, 'Financial Accounting System', 'A system that helps manage financial transactions and reporting.');
+(4, 'Financial Accounting System', 'A system that helps manage financial transactions and reporting.')
+ *
+ERROR at line 1:
+ORA-00928: missing SELECT keyword
+
+
+SQL> (5, 'Human Resource Management', 'A system for managing employee data, recruitment, and payroll processes.');
+(5, 'Human Resource Management', 'A system for managing employee data, recruitment, and payroll processes.')
+ *
+ERROR at line 1:
+ORA-00928: missing SELECT keyword
+
+
+SQL> INSERT INTO Systems (system_id, name, description) VALUES
+  2  (2, 'Customer Relationship Management', 'A system for managing a company\'s interactions with current and potential customers.');
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> INSERT INTO Systems (system_id, name, description) VALUES
+  2  (2, 'Customer Relationship Management', 'A system for managing a company\'s interactions with current and potential customers.');
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> -- Update the Admin role description
+SQL> UPDATE Roles
+  2  SET description = 'Administrator role with full access and management capabilities'
+  3  WHERE role_id = 1;
+
+1 row updated.
+
+SQL>
+SQL> -- Update the User role description
+SQL> UPDATE Roles
+  2  SET description = 'Regular user with limited access to features'
+  3  WHERE role_id = 2;
+
+1 row updated.
+
+SQL>
+SQL> -- Update the Guest role description
+SQL> UPDATE Roles
+  2  SET description = 'Guest user with read-only access to public content'
+  3  WHERE role_id = 3;
+
+1 row updated.
+
+SQL> DELETE FROM Users
+  2  WHERE user_id = 2;
+
+1 row deleted.
+
+SQL> SELECT
+  2      u.user_id,
+  3      u.username,
+  4      r.name AS role_name
+  5  FROM
+  6      Users u
+  7  INNER JOIN
+  8      UserRoles ur ON u.user_id = ur.user_id
+  9  INNER JOIN
+ 10      Roles r ON ur.role_id = r.role_id;
+    UserRoles ur ON u.user_id = ur.user_id
+    *
+ERROR at line 8:
+ORA-00942: table or view does not exist
+
+
+SQL> SELECT
+  2      u.user_id,
+  3      u.username,
+  4      u.email,
+  5      r.name AS role_name,
+  6      r.description AS role_description
+  7  FROM
+  8      Users u
+  9  INNER JOIN
+ 10      UserRoles ur ON u.user_id = ur.user_id
+ 11  INNER JOIN
+ 12      Roles r ON ur.role_id = r.role_id;
+    UserRoles ur ON u.user_id = ur.user_id
+    *
+ERROR at line 10:
+ORA-00942: table or view does not exist
+
+
+SQL> CREATE TABLE UserRoles (
+  2      user_id INT,
+  3      role_id INT,
+  4      PRIMARY KEY (user_id, role_id),
+  5      FOREIGN KEY (user_id) REFERENCES Users(user_id),
+  6      FOREIGN KEY (role_id) REFERENCES Roles(role_id)
+  7  );
+
+Table created.
+
+SQL> SELECT
+  2      u.user_id,
+  3      u.username,
+  4      u.email,
+  5      r.name AS role_name,
+  6      r.description AS role_description
+  7  FROM
+  8      Users u
+  9  INNER JOIN
+ 10      UserRoles ur ON u.user_id = ur.user_id
+ 11  INNER JOIN
+ 12      Roles r ON ur.role_id = r.role_id;
+
+no rows selected
+
+SQL> INSERT INTO UserRoles (user_id, role_id) VALUES
+  2  (1, 1),  -- User ID 1 assigned to Role ID 1 (e.g., Admin)
+  3  (1, 2),  -- User ID 1 also assigned to Role ID 2 (e.g., User)
+  4  (2, 2),  -- User ID 2 assigned to Role ID 2 (e.g., User)
+  5  (3, 3);  -- User ID 3 assigned to Role ID 3 (e.g., Guest)
+  6  ;
+(1, 1),  -- User ID 1 assigned to Role ID 1 (e.g., Admin)
+      *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> INSERT INTO UserRoles (user_id, role_id) VALUES
+  2  (1, 1);
+
+1 row created.
+
+SQL> INSERT INTO UserRoles (user_id, role_id) VALUES
+  2  (1, 2);
+
+1 row created.
+
+SQL> INSERT INTO UserRoles (user_id, role_id) VALUES
+  2  (2, 2);
+INSERT INTO UserRoles (user_id, role_id) VALUES
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SYS.SYS_C008327) violated - parent key not
+found
+
+
+SQL> INSERT INTO UserRoles (user_id, role_id) VALUES
+  2  (3, 3);
+
+1 row created.
+
+SQL> SELECT
+  2      u.user_id,
+  3      u.username,
+  4      u.email,
+  5      r.name AS role_name,
+  6      r.description AS role_description
+  7  FROM
+  8      Users u
+  9  INNER JOIN
+ 10      UserRoles ur ON u.user_id = ur.user_id
+ 11  INNER JOIN
+ 12      Roles r ON ur.role_id = r.role_id;
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+ROLE_NAME
+--------------------------------------------------
+ROLE_DESCRIPTION
+--------------------------------------------------------------------------------
+         1 john_doe
+john@example.com
+Admin
+Administrator role with full access and management capabilities
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+ROLE_NAME
+--------------------------------------------------
+ROLE_DESCRIPTION
+--------------------------------------------------------------------------------
+         1 john_doe
+john@example.com
+User
+Regular user with limited access to features
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+ROLE_NAME
+--------------------------------------------------
+ROLE_DESCRIPTION
+--------------------------------------------------------------------------------
+         3 alice_jones
+alice@example.com
+Guest
+Guest user with read-only access to public content
+
+
+SQL> SELECT * FROM Users;
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+PASSWORD
+--------------------------------------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+CREATED_AT
+---------------------------------------------------------------------------
+         1 john_doe
+hashed_password_1
+john@example.com
+03-OCT-24 16.15.37.142000
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+PASSWORD
+--------------------------------------------------------------------------------
+EMAIL
+--------------------------------------------------------------------------------
+CREATED_AT
+---------------------------------------------------------------------------
+         3 alice_jones
+hashed_password_3
+alice@example.com
+03-OCT-24 16.15.37.147000
+
+
+SQL> INSERT INTO Users (user_id, username, password, email) VALUES
+  2  (4, 'bob_brown', 'hashed_password_4', 'bob@example.com');
+
+1 row created.
+
+SQL> UPDATE Users
+  2  SET email = 'john_doe_updated@example.com'
+  3  WHERE username = 'john_doe';
+
+1 row updated.
+
+SQL> DELETE FROM Roles
+  2  WHERE role_id = 4;  -- Deletes Moderator role
+  3  ;
+WHERE role_id = 4;  -- Deletes Moderator role
+                 *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> DELETE FROM Roles
+  2  WHERE role_id = 4;
+
+1 row deleted.
+
+SQL> SELECT
+  2      u.user_id,
+  3      u.username,
+  4      r.name AS role_name
+  5  FROM
+  6      Users u
+  7  LEFT JOIN
+  8      UserRoles ur ON u.user_id = ur.user_id
+  9  LEFT JOIN
+ 10      Roles r ON ur.role_id = r.role_id;
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+ROLE_NAME
+--------------------------------------------------
+         1 john_doe
+Admin
+
+         1 john_doe
+User
+
+         3 alice_jones
+Guest
+
+
+   USER_ID USERNAME
+---------- --------------------------------------------------
+ROLE_NAME
+--------------------------------------------------
+         4 bob_brown
+
+
+
+SQL> SELECT
+  2      r.name AS role_name,
+  3      COUNT(u.user_id) AS user_count
+  4  FROM
+  5      Roles r
+  6  LEFT JOIN
+  7      (SELECT ur.user_id, ur.role_id
+  8       FROM UserRoles ur) AS user_roles ON r.role_id = user_roles.role_id
+
+  9  LEFT JOIN
+ 10      Users u ON user_roles.user_id = u.user_id
+ 11  GROUP BY
+ 12      r.name;
+     FROM UserRoles ur) AS user_roles ON r.role_id = user_roles.role_id
+                        *
+ERROR at line 8:
+ORA-00905: missing keyword
+
+
+SQL> SELECT
+  2      r.name AS role_name,
+  3      COUNT(u.user_id) AS user_count
+  4  FROM
+  5      Roles r
+  6  LEFT JOIN
+  7      (SELECT ur.user_id, ur.role_id
+  8       FROM UserRoles ur) user_roles ON r.role_id = user_roles.role_id
+  9  LEFT JOIN
+ 10      Users u ON user_roles.user_id = u.user_id
+ 11  GROUP BY
+ 12      r.name;
+
+ROLE_NAME                                          USER_COUNT
+-------------------------------------------------- ----------
+Admin                                                       1
+User                                                        1
+Guest                                                       1
+SuperUser                                                   0
